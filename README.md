@@ -1,44 +1,40 @@
 # Multi-Modal Perception: Camera + LiDAR (KITTI)
 
-This repository explores multi-modal 3D perception using **camera and LiDAR data**,
-focusing on detection, segmentation, and tracking for autonomous driving.
-
-The project is built incrementally, with each stage emphasizing **sensor geometry,
-calibration, and fusion fundamentals** before introducing learning-based models.
+This project implements a foundational multi-modal perception pipeline using
+camera and LiDAR data, inspired by autonomous driving systems.
 
 ---
+
+## Features
+- KITTI dataset support
+- LiDAR -> Camera projection using calibration
+- Height-normalized LiDAR visualization
+- Bird’s Eye View (BEV) construction
+- Side-by-side Camera + BEV visualization
+
+## Key Concepts Demonstrated
+- Sensor calibration and coordinate frames
+- Homogeneous transformations
+- Ground-relative height estimation
+- Metric BEV representation
+- Multi-modal consistency
+
+## Visualizations
+- Camera view with LiDAR height overlay
+- BEV using max-height pooling per cell
+
+## Tech Stack
+- Python
+- NumPy
+- OpenCV
+- Matplotlib
 
 ## Dataset
-- **KITTI Tracking Dataset**
-- Sensors:
-  - RGB camera (rectified)
-  - Velodyne LiDAR (3D point clouds)
+- KITTI (Camera + Velodyne LiDAR)
 
-Dataset is expected under: `dataset/KITTI/`
-
-## Part 1 -- Dataset & Sensor Foundations
-- Load raw camera images and LiDAR point clouds
-- Parse and validate calibration files
-- Understand sensor coordinate frames
-- Visualize raw sensor data
-This establishes a reliable foundation for camera-LiDAR fusion.
-
-## Part 2 -- LiDAR to Camera Projection
-- Projected LiDAR points into camera image using KITTI calibration
-- Filtered points behind camera and outside image bounds
-- Visualized points colored by **ground-relative height**
-
-## Part 3 -- Bird's Eye View (BEV)
-- Converted LiDAR point clouds into BEV representation
-- Applied ROI filtering and metric discretization
-- Visualized max-height BEV with Cartesian orientation
-- BEV used as foundation for detection and tracking
-
----
-
-## Project Structure
+## Structure
 ```
-data/ # Dataset loaders and sanity checks
+data/ # Dataset loaders
 utils/ # Calibration parsing and geometry utilities
 visualization/ # Sensor visualizations (BEV, images)
 models/ # Models (to be added)

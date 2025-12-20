@@ -2,7 +2,7 @@
 
 These notes capture key concepts and insights learned while building a multi-modal perception pipeline.
 
-## Part 1 - Sensor & Geometry Fundamentals
+## Sensor & Geometry Fundamentals
 
 ### LiDAR
 - Stored as binary float32: (x, y, z, reflectance)
@@ -20,7 +20,7 @@ These notes capture key concepts and insights learned while building a multi-mod
 - Projection matrix maps 3D camera coordinates -> 2D pixels
 - Calibration parsing is dataset-specific
 
-## Day 2 - LiDAR to Camera Projection
+## LiDAR to Camera Projection
 
 ### Key Concepts
 
@@ -43,7 +43,7 @@ These notes capture key concepts and insights learned while building a multi-mod
 - Masking & filtering ensures physically meaningful visualization
 - Ground-relative height calculation adds semantic understanding
 
-## Part 3 - Bird's Eye View (BEV)
+## Bird's Eye View (BEV)
 
 ### Why BEV is used
 - Perspective images distort scale
@@ -77,3 +77,29 @@ These notes capture key concepts and insights learned while building a multi-mod
 In KITTI:
 - LiDAR is already in ego frame. BEV is constructed in ego frame.
 - Camera projection converts ego -> camera frame.
+
+## Height Normalization in LiDAR
+Raw LiDAR Z-values are relative to the sensor origin, not the ground. Directly visualizing or thresholding Z leads to misleading results.
+
+### Problem
+- Ground points often have large negative Z
+- Height distributions are skewed
+- Camera and BEV visualizations become inconsistent
+
+### Solution
+Estimate ground height per frame using a robust percentile:
+- Ground height ~ 5th percentile of Z
+- Normalize height: z_ground = z - ground_z
+
+This produces:
+- Ground ~ 0 m
+- Objects > 0 m
+- Consistent height semantics across modalities
+
+### Takeaways
+
+- LiDAR height is sensor-centric, not ground-centric
+- Ground-relative height is essential for meaningful BEV
+- BEV enables metric reasoning for detection and tracking
+- Consistent semantics across views is critical in multi-modal systems
+

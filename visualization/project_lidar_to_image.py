@@ -45,16 +45,17 @@ def overlay_lidar_on_image(img_path, lidar, P2, R0, Tr):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # Convert to RGB for plotting
 
     u, v, mask = project_lidar_to_image(lidar, P2, R0, Tr, img.shape[:2])
-    z_sensor = 1.73 # Estimate the LiDAR mounting height (m)
-    z_ground = lidar[:, 2] - z_sensor # Compute height relative to ground
-    # Invert height for color mapping to match image coordinates
-    cmap_values = -z_ground  # now higher points are visually “higher” in image
+
+    z = lidar[:, 2]
+    ground_z = np.percentile(z, 5)
+    z_ground = z - ground_z # frame-adaptive ground height
+    z_vis = np.clip(z_ground, 0.0, 3.0) # Clip extreme values to improve contrast
+
     plt.figure(figsize=(12, 5))
     plt.imshow(img)
-    # all points in LiDAR array  ->  apply mask -> only visible points remain
-    plt.scatter(u[mask], v[mask], s=0.5, c=cmap_values[mask], cmap="viridis")  # color by height
+    plt.scatter(u[mask], v[mask], s=0.5, c=z_vis[mask], cmap="viridis")  # color by height
     plt.axis("off")
-    plt.colorbar(label="Height (m, negative for visualization)")
-    plt.title("LiDAR points projected on camera image")
+    plt.title("LiDAR → Camera Projection (Height-normalized)")
+    plt.colorbar(label="Height above ground (m)")
     plt.show()
 
