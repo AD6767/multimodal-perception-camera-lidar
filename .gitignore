@@ -6,6 +6,8 @@ venv/
 # Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # Dataset (local only)
 dataset/

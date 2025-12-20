@@ -20,7 +20,25 @@ These notes capture key concepts and insights learned while building a multi-mod
 - Projection matrix maps 3D camera coordinates -> 2D pixels
 - Calibration parsing is dataset-specific
 
-### Key Insight
-Always verify raw sensor data and geometry before applying ML models.
-Small calibration errors propagate downstream into fusion and tracking.
+## Day 2 — LiDAR to Camera Projection
 
+### Key Concepts
+
+- **LiDAR coordinate frame (Velodyne)**
+  - x: forward
+  - y: left
+  - z: up
+- `lidar[:, 2]` is height relative to LiDAR sensor origin
+
+### Projection to Camera
+
+1. Convert LiDAR points to homogeneous coordinates: `[x, y, z, 1]`
+2. Transform to camera frame.
+3. Project to image plane.
+4. Mask points outside image & filter points behind camera.
+
+### Insights
+- Homogeneous coordinates allow rotation + translation in one step
+- Projection order matters: LiDAR -> Camera -> Rectified -> Image
+- Masking & filtering ensures physically meaningful visualization
+- Ground-relative height calculation adds semantic understanding

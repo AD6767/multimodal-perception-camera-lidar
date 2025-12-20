@@ -1,8 +1,10 @@
 from data.kitti_loader import load_image, load_lidar
 from utils.calibration import load_calibration, get_calib_matrices
 from visualization.visualize_data import show_image, show_lidar_topdown
+from visualization.project_lidar_to_image import overlay_lidar_on_image
 
 import matplotlib.pyplot as plt
+
 
 lidar = load_lidar("dataset/KITTI/training/velodyne/0000/000000.bin")
 print("LiDAR shape", lidar.shape)  # (123397, 4)
@@ -18,3 +20,4 @@ print("Camera L", img.shape)   # (375, 1242, 3)
 # uncomment to visualize sample raw image. 
 # show_image(img=img)
 
+overlay_lidar_on_image("dataset/KITTI/tracking/training/image_02/0000/000000.png", lidar, P2, R0, Tr)

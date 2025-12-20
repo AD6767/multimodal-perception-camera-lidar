@@ -16,13 +16,17 @@ calibration, and fusion fundamentals** before introducing learning-based models.
 
 Dataset is expected under: `dataset/KITTI/`
 
-## Part 1 — Dataset & Sensor Foundations
-**Goals**
+## Part 1 -- Dataset & Sensor Foundations
 - Load raw camera images and LiDAR point clouds
 - Parse and validate calibration files
 - Understand sensor coordinate frames
 - Visualize raw sensor data
 This establishes a reliable foundation for camera-LiDAR fusion.
+
+## Part 2 — LiDAR to Camera Projection
+- Projected LiDAR points into camera image using KITTI calibration
+- Filtered points behind camera and outside image bounds
+- Visualized points colored by **ground-relative height**
 
 ---
 
@@ -48,9 +52,8 @@ pip install -r requirements.txt
 ---
 
 ## Run
-### Part 1
 ```bash
-python -m data.test_kitti_loader
+python -m test.test
 ```
 
 
