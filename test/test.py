@@ -2,6 +2,7 @@ from data.kitti_loader import load_image, load_lidar
 from utils.calibration import load_calibration, get_calib_matrices
 from visualization.visualize_data import show_image, show_lidar_topdown
 from visualization.project_lidar_to_image import overlay_lidar_on_image
+from visualization.bev import lidar_to_bev, visualize_bev
 
 import matplotlib.pyplot as plt
 
@@ -20,4 +21,8 @@ print("Camera L", img.shape)   # (375, 1242, 3)
 # uncomment to visualize sample raw image. 
 # show_image(img=img)
 
-overlay_lidar_on_image("dataset/KITTI/tracking/training/image_02/0000/000000.png", lidar, P2, R0, Tr)
+# uncomment to visualize lidar points overlay on image
+# overlay_lidar_on_image("dataset/KITTI/tracking/training/image_02/0000/000000.png", lidar, P2, R0, Tr)
+
+bev_map = lidar_to_bev(lidar)
+visualize_bev(bev_map)

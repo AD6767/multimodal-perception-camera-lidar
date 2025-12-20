@@ -23,10 +23,16 @@ Dataset is expected under: `dataset/KITTI/`
 - Visualize raw sensor data
 This establishes a reliable foundation for camera-LiDAR fusion.
 
-## Part 2 — LiDAR to Camera Projection
+## Part 2 -- LiDAR to Camera Projection
 - Projected LiDAR points into camera image using KITTI calibration
 - Filtered points behind camera and outside image bounds
 - Visualized points colored by **ground-relative height**
+
+## Part 3 -- Bird's Eye View (BEV)
+- Converted LiDAR point clouds into BEV representation
+- Applied ROI filtering and metric discretization
+- Visualized max-height BEV with Cartesian orientation
+- BEV used as foundation for detection and tracking
 
 ---
 

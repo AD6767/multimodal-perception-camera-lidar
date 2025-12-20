@@ -2,7 +2,7 @@
 
 These notes capture key concepts and insights learned while building a multi-modal perception pipeline.
 
-## Part 1 — Sensor & Geometry Fundamentals
+## Part 1 - Sensor & Geometry Fundamentals
 
 ### LiDAR
 - Stored as binary float32: (x, y, z, reflectance)
@@ -20,7 +20,7 @@ These notes capture key concepts and insights learned while building a multi-mod
 - Projection matrix maps 3D camera coordinates -> 2D pixels
 - Calibration parsing is dataset-specific
 
-## Day 2 — LiDAR to Camera Projection
+## Day 2 - LiDAR to Camera Projection
 
 ### Key Concepts
 
@@ -42,3 +42,38 @@ These notes capture key concepts and insights learned while building a multi-mod
 - Projection order matters: LiDAR -> Camera -> Rectified -> Image
 - Masking & filtering ensures physically meaningful visualization
 - Ground-relative height calculation adds semantic understanding
+
+## Part 3 - Bird's Eye View (BEV)
+
+### Why BEV is used
+- Perspective images distort scale
+- BEV preserves metric distances
+- Tracking and motion reasoning are simpler in BEV
+
+### Coordinate conventions
+- X: forward
+- Y: lateral
+- Z: height
+- Ego vehicle placed at bottom of BEV
+
+### Implementation details
+- ROI filtering avoids wasted computation
+- Subtract min range to map to 0-index grid
+- Divide by resolution (meters -> pixels)
+- Max-height per cell chosen over density
+
+### Visualization pitfalls
+- Must use origin='lower'
+- Camera images use origin='upper'
+- Incorrect origin flips forward/backward intuition
+
+### Ego vs World vs Object frames
+| Frame        | Meaning                             |
+| ------------ | ----------------------------------- |
+| Ego frame    | Coordinates relative to our vehicle |
+| World frame  | Global map coordinates              |
+| Object frame | Coordinates relative to an object   |
+
+In KITTI:
+- LiDAR is already in ego frame. BEV is constructed in ego frame.
+- Camera projection converts ego -> camera frame.
