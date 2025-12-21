@@ -21,3 +21,6 @@ dataset/
 
 # Logs
 *.log
+
+# Local notes
+notes/QandA.md

@@ -1,27 +1,68 @@
 # Multi-Modal Perception: Camera + LiDAR (KITTI)
 
-This project implements a foundational multi-modal perception pipeline using
-camera and LiDAR data, inspired by autonomous driving systems.
+This project implements a foundational **multi-modal perception pipeline**
+using **camera and LiDAR data**, inspired by modern autonomous driving systems.
 
 ---
 
 ## Features
-- KITTI dataset support
-- LiDAR -> Camera projection using calibration
-- Height-normalized LiDAR visualization
-- Bird’s Eye View (BEV) construction
+- KITTI dataset support (camera + Velodyne LiDAR)
+- LiDAR → camera projection using calibration matrices
+- Ground-relative LiDAR height visualization
+- Bird's Eye View (BEV) construction
+- Multi-channel BEV tensor:
+  - Height
+  - Density
+  - Intensity
 - Side-by-side Camera + BEV visualization
 
+---
+
 ## Key Concepts Demonstrated
-- Sensor calibration and coordinate frames
+- Sensor calibration & coordinate frames
 - Homogeneous transformations
+- Camera projection geometry
 - Ground-relative height estimation
 - Metric BEV representation
-- Multi-modal consistency
+- Multi-modal sensor alignment
+
+---
+
+## BEV Representation
+The BEV encodes LiDAR data into a grid-based tensor suitable for
+detection and tracking models.
+
+**Channels**
+- **Height**: Max ground-normalized height per cell
+- **Density**: Log-normalized point count
+- **Intensity**: Mean LiDAR reflectance
+
+**Coordinate Convention**
+- X: forward
+- Y: lateral
+- Z: up
+- Ego vehicle located at bottom-center of BEV
+
+---
+
+## BEV Feature Visualization
+
+Below is an example of the BEV feature channels constructed from LiDAR data.
+
+- **Height** highlights object structure
+- **Density** captures occupancy and vertical surfaces
+- **Intensity** reflects material and surface properties
+
+![BEV Height, Density, Intensity](assets/bev_height_density_intensity.png)
+
+---
 
 ## Visualizations
 - Camera view with LiDAR height overlay
-- BEV using max-height pooling per cell
+- BEV height, density, and intensity maps
+- Side-by-side Camera + BEV comparison
+
+---
 
 ## Tech Stack
 - Python
@@ -29,14 +70,19 @@ camera and LiDAR data, inspired by autonomous driving systems.
 - OpenCV
 - Matplotlib
 
+---
+
 ## Dataset
 - KITTI (Camera + Velodyne LiDAR)
 
-## Structure
+---
+
+## Project Structure
+
 ```
 data/ # Dataset loaders
 utils/ # Calibration parsing and geometry utilities
-visualization/ # Sensor visualizations (BEV, images)
+visualization/ # Camera & BEV visualizations
 models/ # Models (to be added)
 notes/notes.md  # Learning & reference notes
 dataset/ # Local dataset (ignored in git)

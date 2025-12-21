@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 
-from visualization.bev import lidar_to_bev_height
+from visualization.bev import compute_bev_height_map
 from visualization.project_lidar_to_image import project_lidar_to_image
 
 
@@ -31,7 +31,7 @@ def visualize_camera_and_bev(
     u, v, mask = project_lidar_to_image(lidar, P2, R0, Tr, img.shape[:2])
 
     # BEV
-    bev_map = lidar_to_bev_height(lidar, res=bev_res, x_range=x_range, y_range=y_range, height_range=height_range)
+    bev_map = compute_bev_height_map(lidar, res=bev_res, x_range=x_range, y_range=y_range, height_range=height_range)
 
     # Visualization
     fig, axs = plt.subplots(1, 2, figsize=(16, 6))
