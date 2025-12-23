@@ -9,11 +9,9 @@ using **camera and LiDAR data**, inspired by modern autonomous driving systems.
 - KITTI dataset support (camera + Velodyne LiDAR)
 - LiDAR → camera projection using calibration matrices
 - Ground-relative LiDAR height visualization
+- Simple ground removal visualization
 - Bird's Eye View (BEV) construction
-- Multi-channel BEV tensor:
-  - Height
-  - Density
-  - Intensity
+- Height, density, and intensity BEV channels
 - Side-by-side Camera + BEV visualization
 
 ---
@@ -42,6 +40,8 @@ detection and tracking models.
 - Y: lateral
 - Z: up
 - Ego vehicle located at bottom-center of BEV
+
+Ground is handled using a percentile-based height normalization to reduce road surface dominance while preserving obstacle structure.
 
 ---
 

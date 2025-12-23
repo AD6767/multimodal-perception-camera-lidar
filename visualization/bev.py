@@ -156,7 +156,7 @@ def create_bev_tensor(height_map, density_map, intensity_map):
     bev_tensor = np.stack([height_map, density_map, intensity_map], axis=-1)
     return bev_tensor # shape = (H, W, 3)
 
-def visualize_bev(bev_map):
+def visualize_height_bev(bev_map):
     plt.figure(figsize=(8,5))
     plt.imshow(bev_map, cmap='viridis', origin='lower')
     plt.title("LiDAR Bird's Eye View (Height-normalized)")

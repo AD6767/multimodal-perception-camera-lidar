@@ -190,3 +190,12 @@ intensity = sum(point_intensity_in_cell) / number_of_points_in_cell
 | Density   | Count + log norm   | Show occupancy of cell                                    |
 | Intensity | Mean               | Show typical reflectivity independent of number of points |
 
+## Ground Handling in LiDAR Processing
+
+### Simple Ground Removal (Baseline)
+- Ground is estimated using a low percentile of LiDAR z-values (e.g., 5th percentile)
+- Assumes road surface occupies the lowest heights in the scene
+- Ground-relative height computed as:
+  - `z_ground = z - ground_z`
+- Heights are clipped to a fixed range (e.g., 0–3 m)
+

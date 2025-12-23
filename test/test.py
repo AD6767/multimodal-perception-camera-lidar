@@ -5,8 +5,9 @@ from utils.calibration import load_calibration, get_calib_matrices
 from visualization.visualize_data import show_image, show_lidar_topdown
 from visualization.project_lidar_to_image import overlay_lidar_on_image
 from visualization.bev import lidar_to_bev_height, visualize_bev, compute_bev_density_map, \
-    compute_bev_intensity_map, map_lidar_to_bev_grid, compute_bev_height_map
+    compute_bev_intensity_map, map_lidar_to_bev_grid, compute_bev_height_map, visualize_height_bev
 from visualization.camera_bev_fusion import visualize_camera_and_bev
+from visualization.ground_removal import remove_ground_simple
 
 
 lidar = load_lidar("dataset/KITTI/training/velodyne/0000/000000.bin")
@@ -28,13 +29,20 @@ print("Camera L", img.shape)   # (375, 1242, 3)
 
 # height_map = lidar_to_bev_height(lidar)
 # uncomment to visualize lidar BEV visualization
-# visualize_bev(height_map)
+# visualize_height_bev(height_map)
 
 # uncomment to visualize camera and lidar BEV visualization
 # visualize_camera_and_bev("dataset/KITTI/tracking/training/image_02/0000/000000.png", lidar, P2, R0, Tr)
 
 x_indices, y_indices = map_lidar_to_bev_grid(lidar)
 height_map = compute_bev_height_map(lidar, x_indices, y_indices)
-density_map = compute_bev_density_map(x_indices, y_indices)
-intensity_map = compute_bev_intensity_map(lidar, x_indices, y_indices)
-visualize_bev(height_map, density_map, intensity_map)
+# density_map = compute_bev_density_map(x_indices, y_indices)
+# intensity_map = compute_bev_intensity_map(lidar, x_indices, y_indices)
+# visualize_bev(height_map, density_map, intensity_map)
+visualize_height_bev(height_map)
+
+lidar_noground = remove_ground_simple(lidar)
+x_indices_noground, y_indices_noground = map_lidar_to_bev_grid(lidar_noground)
+height_map_noground = compute_bev_height_map(lidar_noground, x_indices_noground, y_indices_noground)
+visualize_height_bev(height_map_noground)
+
