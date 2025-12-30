@@ -270,3 +270,35 @@ BEV Box Definition: (center_x, center_y, width, length, yaw)
 - Yaw: orientation regression
 - Grid resolution and BEV bounds control coverage & sparsity
 - Cells outside BEV range skipped
+
+## BEV Resolution, Stride, and Backbone
+### BEV Resolution vs Backbone Stride
+- BEV resolution defines how much real-world area one input pixel covers `resolution = meters per pixel`
+- Backbone stride defines how many BEV pixels are merged into one output cell `real-world size per output cell = BEV resolution × backbone stride`
+Example: each output feature corresponds to ~1 meter in the real world.
+```
+BEV resolution = 0.25 m
+Backbone stride = 4
+1 output cell = 4 × 0.25 m = 1.0 m × 1.0 m
+```
+* Why ~1 m Cells Are Good for Cars? Typical car dimensions ~ 1.8m X 4.0m. This is ideal because objects span multiple cells (not too coarse), center localization is stable.
+* Backbone purpose: aggregate local geometry, increase receptive field, preserve spatial correspondence for detection
+
+## Detection Head
+Anchor-free, center-based detection.
+Per BEV cell predicts:
+- Heatmap: object center probability
+- Size: width & length
+- Yaw: orientation
+Separate convolutional heads (3):
+- classification (heatmap)
+- regression (size, yaw)
+
+## Losses
+- Heatmap: focal loss (handles extreme class imbalance)
+- Size: masked L1 loss (only at object centers)
+- Yaw: masked L1 loss (only at object centers)
+Key idea:
+- regression losses applied **only where heatmap == 1**
+- background cells do not contribute to box/yaw loss
+This matches CenterNet / CenterPoint-style BEV detectors.

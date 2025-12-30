@@ -15,8 +15,8 @@ The project incrementally builds:
 | Part 1     | LiDAR loading, calibration, projections | ✅      |
 | Part 2     | BEV feature encoding                    | ✅      |
 | **Part 3** | **BEV labels & detection targets**      | ✅      |
-| Part 4     | BEV CNN backbone                        | ⏳      |
-| Part 5     | Detection head + losses                 | ⏳      |
+| Part 4     | BEV CNN backbone                        | ✅      |
+| Part 5     | Detection head + losses                 | ✅      |
 | Part 6     | Inference & visualization               | ⏳      |
 
 ---
@@ -47,8 +47,6 @@ The BEV encodes LiDAR data into a grid-based tensor suitable for detection and t
 Below is an example of the BEV feature channels constructed from LiDAR data.
 ![BEV Height, Density, Intensity](assets/bev_height_density_intensity.png)
 
----
-
 ## BEV Detection Targets
 - Label Processing
     - KITTI tracking labels parsed per frame, objects filtered by class
@@ -61,6 +59,16 @@ Inspired by CenterNet / CenterPoint-style detectors:
     - Center heatmap (object presence)
     - Box size regression (width, length)
     - Orientation regression (yaw)
+
+## Detection Model
+minimal BEV-based 3D object detector:
+- CNN backbone operating on BEV grids (stride-4)
+- Anchor-free detection head
+  - center heatmap
+  - box size regression (w, l)
+  - orientation regression (yaw)
+- Focal loss for center classification
+- Masked L1 losses for regression
 
 ---
 
