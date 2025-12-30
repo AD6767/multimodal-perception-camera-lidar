@@ -199,3 +199,74 @@ intensity = sum(point_intensity_in_cell) / number_of_points_in_cell
   - `z_ground = z - ground_z`
 - Heights are clipped to a fixed range (e.g., 0–3 m)
 
+## BEV as CNN Input
+
+- BEV tensors are treated as images by CNNs
+- Each channel encodes complementary geometric information:
+  - Height -> object shape
+  - Density -> point distribution
+  - Intensity -> surface reflectance
+
+Compared to RGB:
+- No perspective distortion
+- Metric distances preserved
+- Objects have consistent scale
+
+## What BEV Detectors Predict
+
+In BEV space, detectors typically predict:
+- Object center (x, y)
+- Object size (length, width)
+- Orientation (yaw) (Yaw represents object rotation around the vertical Z axis, defined in X-Y plane)
+- Class probability
+
+BEV simplifies detection because:
+- No depth ambiguity
+- Rotation handled explicitly
+- Ground plane already normalized
+
+## Anchor-Based vs Anchor-Free Detection (BEV)
+
+Anchor-Based (eg: PointPillars, SECOND):
+- Uses predefined box templates
+- Requires tuning anchor sizes
+- Historically common
+
+Anchor-Free (eg: CenterPoint):
+- Predicts object centers directly
+- Simpler formulation
+- Dominant in modern BEV detectors
+
+## Coordinate Conversion: KITTI 3D -> BEV
+KITTI co-ordinates:
+x -> right
+y -> down (vertical)
+z -> forward
+
+KITTI 3D Label Fields:
+h, w, l   -> object dimensions
+x, y, z   -> object center in camera coordinates
+rotation_y (yaw) -> rotation around vertical (Y) axis
+
+BEV Coordinate System (Top-Down):
+bev_x = camera x   (right)
+bev_y = camera z   (forward)
+BEV Box Definition: (center_x, center_y, width, length, yaw)
+
+| KITTI 3D   | BEV       |
+| ---------- | --------- |
+| x          | center_x  |
+| z          | center_y  |
+| w          | width     |
+| l          | length    |
+| rotation_y | yaw       |
+| y          | X dropped |
+| h          | X dropped |
+
+### BEV Targets
+- Anchor-free, center-based target representation
+- Heatmap: object center
+- Size: width & length regression
+- Yaw: orientation regression
+- Grid resolution and BEV bounds control coverage & sparsity
+- Cells outside BEV range skipped

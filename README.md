@@ -1,39 +1,42 @@
 # Multi-Modal Perception: Camera + LiDAR (KITTI)
 
-This project implements a foundational **multi-modal perception pipeline**
-using **camera and LiDAR data**, inspired by modern autonomous driving systems.
+This repository implements a from-scratch BEV perception pipeline using LiDAR and camera data, inspired by modern autonomous driving systems.
+
+The project incrementally builds:
+1. BEV representations from raw LiDAR
+2. Ground-truth detection targets from KITTI 3D labels
+3. A BEV-based 3D object detector (upcoming)
 
 ---
 
-## Features
-- KITTI dataset support (camera + Velodyne LiDAR)
-- LiDAR → camera projection using calibration matrices
-- Ground-relative LiDAR height visualization
-- Simple ground removal visualization
-- Bird's Eye View (BEV) construction
-- Height, density, and intensity BEV channels
-- Side-by-side Camera + BEV visualization
+## Project Roadmap
+| Stage      | Description                             | Status |
+| ---------- | --------------------------------------- | ------ |
+| Part 1     | LiDAR loading, calibration, projections | ✅      |
+| Part 2     | BEV feature encoding                    | ✅      |
+| **Part 3** | **BEV labels & detection targets**      | ✅      |
+| Part 4     | BEV CNN backbone                        | ⏳      |
+| Part 5     | Detection head + losses                 | ⏳      |
+| Part 6     | Inference & visualization               | ⏳      |
 
 ---
 
-## Key Concepts Demonstrated
-- Sensor calibration & coordinate frames
-- Homogeneous transformations
-- Camera projection geometry
-- Ground-relative height estimation
-- Metric BEV representation
-- Multi-modal sensor alignment
+## Dataset
+- KITTI Tracking Dataset
+- Modalities:
+    - Velodyne LiDAR
+    - RGB camera
+    - Calibration files
+    - 3D tracking annotations
 
 ---
 
-## BEV Representation
-The BEV encodes LiDAR data into a grid-based tensor suitable for
-detection and tracking models.
-
+## BEV Representation (LiDAR -> Grid)
+The BEV encodes LiDAR data into a grid-based tensor suitable for detection and tracking models. Each BEV cell aggregates points falling within a fixed spatial region.
 **Channels**
-- **Height**: Max ground-normalized height per cell
-- **Density**: Log-normalized point count
-- **Intensity**: Mean LiDAR reflectance
+- **Height**: Max ground-normalized height per cell (highlights object structure)
+- **Density**: Log-normalized point count (captures occupancy and vertical surfaces)
+- **Intensity**: Mean LiDAR reflectance (reflects material and surface properties)
 
 **Coordinate Convention**
 - X: forward
@@ -41,51 +44,39 @@ detection and tracking models.
 - Z: up
 - Ego vehicle located at bottom-center of BEV
 
-Ground is handled using a percentile-based height normalization to reduce road surface dominance while preserving obstacle structure.
-
----
-
-## BEV Feature Visualization
-
 Below is an example of the BEV feature channels constructed from LiDAR data.
-
-- **Height** highlights object structure
-- **Density** captures occupancy and vertical surfaces
-- **Intensity** reflects material and surface properties
-
 ![BEV Height, Density, Intensity](assets/bev_height_density_intensity.png)
 
 ---
 
-## Visualizations
-- Camera view with LiDAR height overlay
-- BEV height, density, and intensity maps
-- Side-by-side Camera + BEV comparison
+## BEV Detection Targets
+- Label Processing
+    - KITTI tracking labels parsed per frame, objects filtered by class
+    - 3D bounding boxes converted to BEV boxes `(x, y, w, l, yaw)`
+- BEV Ground-Truth
+    - Rotated BEV box visualization
+    - Coordinate transform from LiDAR frame -> BEV plane
+- Detection Targets (Anchor-Free)
+Inspired by CenterNet / CenterPoint-style detectors:
+    - Center heatmap (object presence)
+    - Box size regression (width, length)
+    - Orientation regression (yaw)
 
 ---
 
-## Tech Stack
-- Python
-- NumPy
-- OpenCV
-- Matplotlib
-
----
-
-## Dataset
-- KITTI (Camera + Velodyne LiDAR)
-
----
-
-## Project Structure
+## Code Structure
 
 ```
-data/ # Dataset loaders
-utils/ # Calibration parsing and geometry utilities
-visualization/ # Camera & BEV visualizations
-models/ # Models (to be added)
-notes/notes.md  # Learning & reference notes
-dataset/ # Local dataset (ignored in git)
+multimodal-perception-camera-lidar/
+├── data/                 # KITTI tracking data
+├── dataset/KITTI/        # Dataset loaders & label parsing
+├── bev/                  # BEV utilities & encoders
+├── visualization/        # BEV & camera visualizations
+├── models/               # BEV backbone & detection head (WIP)
+├── training/             # Losses & training loop (WIP)
+├── notes/                # Conceptual notes
+├── test/                 # Sanity tests & visual checks
+└── README.md
 ```
 
 ---
@@ -96,12 +87,3 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-
----
-
-## Run
-```bash
-python -m test.test
-```
-
-

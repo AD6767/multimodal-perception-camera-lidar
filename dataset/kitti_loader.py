@@ -12,5 +12,3 @@ def load_lidar(bin_path):
     """Load LiDAR point cloud (x, y, z, reflectance)"""
     points = np.fromfile(bin_path, dtype=np.float32).reshape(-1, 4)
     return points # shape = (100000, 4)
-
-

@@ -9,8 +9,8 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Dataset (local only)
-dataset/
+# Data (local only)
+data/
 
 # OS files
 .DS_Store
