@@ -5,7 +5,7 @@ This repository implements a from-scratch BEV perception pipeline using LiDAR an
 The project incrementally builds:
 1. BEV representations from raw LiDAR
 2. Ground-truth detection targets from KITTI 3D labels
-3. A BEV-based 3D object detector (upcoming)
+3. A BEV-based 3D object detector
 
 ---
 
@@ -18,7 +18,7 @@ The project incrementally builds:
 | Part 4     | BEV CNN backbone                        | ✅      |
 | Part 5     | Detection head + losses                 | ✅      |
 | Part 6     | Training loop                           | ✅      |
-| Part 2     | inference + viz.                        | ⏳      |
+| Part 7     | inference + viz                         | ⏳      |
 
 ---
 
@@ -81,8 +81,8 @@ multimodal-perception-camera-lidar/
 ├── dataset/KITTI/        # Dataset loaders & label parsing
 ├── bev/                  # BEV utilities & encoders
 ├── visualization/        # BEV & camera visualizations
-├── models/               # BEV backbone & detection head (WIP)
-├── training/             # Losses & training loop (WIP)
+├── models/               # BEV backbone & detection head
+├── training/             # Losses & training loop
 ├── notes/                # Conceptual notes
 ├── test/                 # Sanity tests & visual checks
 └── README.md
