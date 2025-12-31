@@ -17,7 +17,8 @@ The project incrementally builds:
 | Part 3     | BEV labels & detection targets          | ✅      |
 | Part 4     | BEV CNN backbone                        | ✅      |
 | Part 5     | Detection head + losses                 | ✅      |
-| Part 6     | Training loop + inference + viz.        | ⏳      |
+| Part 6     | Training loop                           | ✅      |
+| Part 2     | inference + viz.                        | ⏳      |
 
 ---
 

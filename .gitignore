@@ -24,3 +24,8 @@ data/
 
 # Local notes
 notes/QandA.md
+
+# model checkpoints
+checkpoints/
+*.pt
+*.pth
