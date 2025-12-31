@@ -3,6 +3,49 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+class DetectorLoss(nn.Module):
+    def __init__(self, heatmap_weight=1.0, size_weight=1.0, yaw_weight=0.5):
+        super().__init__()
+        self.bce = nn.BCEWithLogitsLoss(reduction="mean")
+        self.heatmap_weight = heatmap_weight
+        self.size_weight = size_weight
+        self.yaw_weight = yaw_weight
+
+    def forward(self, pred, target):
+        """
+        pred:
+          heatmap logits: (B,1,H,W)
+          size: (B,2,H,W)
+          yaw: (B,1,H,W)
+
+        target:
+          heatmap: (B,1,H,W) in {0,1}
+          size: (B,2,H,W) only defined at centers
+          yaw: (B,1,H,W) only defined at centers
+        """
+        # Heatmap loss (dense)
+        heatmap_loss = self.bce(pred["heatmap"], target["heatmap"])
+        # Mask for regression = where centers exist
+        with torch.no_grad():
+            mask = (target["heatmap"] > 0.5).float()  # (B,1,H,W)
+        # Avoid divide-by-zero if no objects in frame
+        denom = mask.sum().clamp(min=1.0)
+        # Size L1 at centers
+        size_l1 = torch.abs(pred["size"] - target["size"])  # (B,2,H,W)
+        size_l1 = (size_l1 * mask).sum() /denom
+        # Yaw L1 at centers (simple)
+        yaw_l1 = torch.abs(pred["yaw"] - target["yaw"])  # (B,1,H,W)
+        yaw_l1 = (yaw_l1 * mask).sum() / denom
+
+        total_loss = (self.heatmap_weight * heatmap_loss + self.size_weight * size_l1 + self.yaw_weight * yaw_l1)
+        return {
+            "total": total_loss,
+            "heatmap": heatmap_loss.detach(),
+            "size": size_l1.detach(),
+            "yaw": yaw_l1.detach(),
+        }
+
+
 class FocalLoss(nn.Module):
     def __init__(self, alpha=2, beta=4):
         super().__init__()

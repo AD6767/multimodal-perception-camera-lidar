@@ -14,10 +14,10 @@ The project incrementally builds:
 | ---------- | --------------------------------------- | ------ |
 | Part 1     | LiDAR loading, calibration, projections | ✅      |
 | Part 2     | BEV feature encoding                    | ✅      |
-| **Part 3** | **BEV labels & detection targets**      | ✅      |
+| Part 3     | BEV labels & detection targets          | ✅      |
 | Part 4     | BEV CNN backbone                        | ✅      |
 | Part 5     | Detection head + losses                 | ✅      |
-| Part 6     | Inference & visualization               | ⏳      |
+| Part 6     | Training loop + inference + viz.        | ⏳      |
 
 ---
 

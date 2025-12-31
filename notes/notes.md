@@ -284,21 +284,14 @@ Backbone stride = 4
 * Why ~1 m Cells Are Good for Cars? Typical car dimensions ~ 1.8m X 4.0m. This is ideal because objects span multiple cells (not too coarse), center localization is stable.
 * Backbone purpose: aggregate local geometry, increase receptive field, preserve spatial correspondence for detection
 
-## Detection Head
-Anchor-free, center-based detection.
-Per BEV cell predicts:
-- Heatmap: object center probability
-- Size: width & length
-- Yaw: orientation
-Separate convolutional heads (3):
-- classification (heatmap)
-- regression (size, yaw)
+## Detection Head + Losses
+- Multi-head outputs per feature cell:
+  - heatmap logits: (B,1,H',W')
+  - size: (B,2,H',W') for (w,l)
+  - yaw: (B,1,H',W')
+- Loss:
+  - heatmap: BCEWithLogits (dense)
+  - size + yaw: L1 at object centers only (mask from target heatmap)
+- Decode:
+  - sigmoid heatmap -> pick top-K peaks -> read size/yaw at those pixels -> convert to meters.
 
-## Losses
-- Heatmap: focal loss (handles extreme class imbalance)
-- Size: masked L1 loss (only at object centers)
-- Yaw: masked L1 loss (only at object centers)
-Key idea:
-- regression losses applied **only where heatmap == 1**
-- background cells do not contribute to box/yaw loss
-This matches CenterNet / CenterPoint-style BEV detectors.
